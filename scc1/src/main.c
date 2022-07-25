@@ -12,11 +12,17 @@
  * change the file name and line number, which we'll need for error reporting.
  */
 
-char* g_filename;
+char g_filename[1024] = { 0 };
 
 void parseArgs(int argc, const char** argv)
 {
-    g_filename = (char*)argv[1];
+    // Really terrible parameter parsing for now.
+
+    for (int i = 1; i < argc; ++i)
+    {
+        if (i == 1)
+            strncpy(g_filename, argv[1], sizeof(g_filename));
+    }
 }
 
 void mainLoop(Lexer* l)
@@ -39,6 +45,12 @@ void mainLoop(Lexer* l)
 int main(int argc, const char** argv)
 {
     parseArgs(argc, argv);
+
+    if (!g_filename[0])
+    {
+        fprintf(stderr, "No filename supplied.\r\n");
+        return 1;
+    }
 
     Lexer* l = new_lexer(g_filename);
     int err = lexer_lastError(l);
