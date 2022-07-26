@@ -13,11 +13,12 @@
 
 typedef enum ErrorCodeTAG
 {
-    ERR_CantOpenFile  = 1000,
-    ERR_OutOfMemory   = 1001,
-    ERR_InternalError = 1002,
+    ERR_CantOpenFile    = 1000,
+    ERR_OutOfMemory     = 1001,
+    ERR_InternalError   = 1002,
 
-    ERR_UnknownType   = 2000,
+    ERR_UnknownType     = 2000,
+    ERR_UnexpectedToken = 2001,
 } ErrorCode;
 
 /* ===================================================================== */

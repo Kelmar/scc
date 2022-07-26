@@ -205,7 +205,7 @@ Token* lexer_parseNumber(Lexer* this)
 
     char* lit = safe_slice(this->buffer + start, this->index - start);
 
-    return new_token(lit, CONST_INT, this->lineNumber, this->filename);
+    return new_token(lit, TOK_ConstInt, this->lineNumber, this->filename);
 }
 
 /* ===================================================================== */
@@ -225,7 +225,7 @@ Token* lexer_parseWord(Lexer* this)
     }
 
     int len = this->index - start;
-    TokenType type = IDENTIFIER;
+    TokenType type = TOK_Identifier;
 
     char* lit = safe_slice(this->buffer + start, len);
 

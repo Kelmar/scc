@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "lexer.h"
+#include "parser.h"
 
 /* ===================================================================== */
 
@@ -36,21 +37,25 @@ void parseArgs(int argc, const char** argv)
 
 /* ===================================================================== */
 
-void mainLoop(Lexer* l)
+void mainLoop(Lexer* l, Parser* p)
 {
-    for (;;)
-    {
-        Token* t = lexer_getToken(l);
+    AstNode* ast = parser_getTree(p);
 
-        if (!t)
-            break;
+    delete_parser(p);
 
-        printf("0x%08X TOKEN: %s\r\n", t->type, t->lit);
+    //for (;;)
+    //{
+    //    Token* t = lexer_getToken(l);
 
-        delete_token(t);
-    }
+    //    if (!t)
+    //        break;
 
-    delete_lexer(l);
+    //    printf("0x%08X TOKEN: %s\r\n", t->type, t->lit);
+
+    //    delete_token(t);
+    //}
+
+    //delete_lexer(l);
 }
 
 /* ===================================================================== */
@@ -66,16 +71,9 @@ int main(int argc, const char** argv)
     }
 
     Lexer* l = new_lexer(g_filename);
-    int err = lexer_lastError(l);
+    Parser* p = new_parser(l);
 
-    if (err != 0)
-    {
-        char* errStr = strerror(err);
-        fprintf(stderr, "Unable to open file '%s': %s\r\n", g_filename, errStr);
-        return 1;
-    }
-
-    mainLoop(l);
+    mainLoop(l, p);
 
     return 0;
 }

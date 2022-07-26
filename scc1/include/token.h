@@ -11,19 +11,19 @@ typedef enum TokenTypeTAG
 {
     // Values below 0x00000100 are ASCII character literals.
 
-    END_OF_FILE  = 0x00000005, // End of file marker (used by lexer to signal EOF)
+    TOK_EndOfFile   = 0x00000005, // End of file marker (used by lexer to signal EOF)
 
-    IDENTIFIER   = 0x00000100,
+    TOK_Identifier  = 0x00000100,
 
     // Constants
-    CONST_STRING = 0x00000101,
-    CONST_CHAR   = 0x00000102,
-    CONST_SHORT  = 0x00000103,
-    CONST_INT    = 0x00000104,
-    CONST_LONG   = 0x00000105,
-    CONST_ULONG  = 0x00000106,
-    CONST_FLOAT  = 0x00000107,
-    CONST_DOUBLE = 0x00000108,
+    TOK_ConstString = 0x00000101,
+    TOK_ConstChar   = 0x00000102,
+    TOK_ConstShort  = 0x00000103,
+    TOK_ConstInt    = 0x00000104,
+    TOK_ConstLong   = 0x00000105,
+    TOK_ConstULong  = 0x00000106,
+    TOK_ConstFloat  = 0x00000107,
+    TOK_ConstDouble = 0x00000108,
 
     // Keywords
     KW_DO        = 0x00001200,

@@ -147,6 +147,7 @@
     <ClCompile Include="src\astnode.c" />
     <ClCompile Include="src\error.c" />
     <ClCompile Include="src\lexer.c" />
+    <ClCompile Include="src\list.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\parser.c" />
     <ClCompile Include="src\token.c" />
@@ -157,6 +158,7 @@
     <ClInclude Include="include\comp.h" />
     <ClInclude Include="include\error.h" />
     <ClInclude Include="include\lexer.h" />
+    <ClInclude Include="include\list.h" />
     <ClInclude Include="include\parser.h" />
     <ClInclude Include="include\token.h" />
   </ItemGroup>

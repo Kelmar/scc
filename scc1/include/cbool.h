@@ -4,7 +4,7 @@
 
 typedef int bool;
 
-const int false = 0;
-const int true = ~0;
+#define false 0
+#define true (~0)
 
 #endif /* __cplusplus */
