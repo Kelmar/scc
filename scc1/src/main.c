@@ -1,7 +1,12 @@
+/* ===================================================================== */
+/* ===================================================================== */
+
 #include <stdio.h>
 #include <string.h>
 
 #include "lexer.h"
+
+/* ===================================================================== */
 
 /*
  * Stage 1 compiling.
@@ -12,7 +17,11 @@
  * change the file name and line number, which we'll need for error reporting.
  */
 
+ /* ===================================================================== */
+
 char g_filename[1024] = { 0 };
+
+/* ===================================================================== */
 
 void parseArgs(int argc, const char** argv)
 {
@@ -24,6 +33,8 @@ void parseArgs(int argc, const char** argv)
             strncpy(g_filename, argv[1], sizeof(g_filename));
     }
 }
+
+/* ===================================================================== */
 
 void mainLoop(Lexer* l)
 {
@@ -41,6 +52,8 @@ void mainLoop(Lexer* l)
 
     delete_lexer(l);
 }
+
+/* ===================================================================== */
 
 int main(int argc, const char** argv)
 {
@@ -66,3 +79,5 @@ int main(int argc, const char** argv)
 
     return 0;
 }
+
+/* ===================================================================== */

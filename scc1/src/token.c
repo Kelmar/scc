@@ -1,29 +1,23 @@
+/* ===================================================================== */
+/* ===================================================================== */
+
 #include <stdlib.h>
 #include <string.h>
 
+#include "error.h"
 #include "token.h"
 
-Token* new_token(const char* lit, int litLen, TokenType type, int lineNumber)
+/* ===================================================================== */
+
+RET_NOTNULL
+Token* new_token(char* lit, TokenType type, int lineNumber, const char* filename)
 {
-    Token* rval = (Token*)malloc(sizeof(Token));
+    Token* rval = (Token*)safe_alloc(sizeof(Token));
 
-    if (!rval)
-        return NULL;
-
-    memset(rval, 0, sizeof(Token));
-
-    rval->lit = malloc(litLen + 1);
+    rval->lit = lit;
     rval->type = type;
     rval->lineNumber = lineNumber;
-
-    if (!rval->lit)
-    {
-        free(rval);
-        return NULL;
-    }
-
-    memset(rval->lit, 0, litLen + 1);
-    strncpy(rval->lit, lit, litLen);
+    rval->filename = filename;
 
     return rval;
 }
@@ -36,3 +30,5 @@ void delete_token(Token* t)
     free(t->lit);
     free(t);
 }
+
+/* ===================================================================== */

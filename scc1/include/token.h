@@ -1,4 +1,11 @@
+/* ===================================================================== */
+/* ===================================================================== */
+
 #pragma once
+
+#include "comp.h"
+
+/* ===================================================================== */
 
 typedef enum TokenTypeTAG
 {
@@ -90,12 +97,22 @@ typedef enum TokenTypeTAG
     SYM_ELIPSE   = 0x00003002, // ...
 } TokenType;
 
+/* ===================================================================== */
+
 typedef struct TokenTAG
 {
     char* lit;
     TokenType type;
+    const char* filename;
     int lineNumber;
 } Token;
 
-Token* new_token(const char* lit, int litLen, TokenType type, int lineNumber);
+/* ===================================================================== */
+
+RET_NOTNULL
+Token* new_token(char* lit, TokenType type, int lineNumber, const char* filename);
 void delete_token(Token*);
+
+#undef RET_NOTNULL__
+
+/* ===================================================================== */

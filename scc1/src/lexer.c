@@ -3,6 +3,7 @@
 
 #include "cbool.h"
 
+#include "error.h"
 #include "token.h"
 #include "lexer.h"
 
@@ -20,6 +21,9 @@ typedef struct LexerTAG
     int   lastError;    ///< The last error encountered
     char  buffer[1024]; ///< Current line buffer
     int   index;        ///< Current index into the line buffer
+
+    // These two can be adjusted with the #line directive
+    char* filename;     ///< Name of the current file we're parsing
     int   lineNumber;   ///< The current line number we're parsing
 } Lexer;
 
@@ -129,19 +133,20 @@ const int MAX_KEYWORDS = (sizeof(g_keywords) / sizeof(void*));
 
 /* ===================================================================== */
 
+RET_NOTNULL
 Lexer* new_lexer(const char* filename)
 {
-    Lexer* rval = (Lexer*)malloc(sizeof(Lexer));
-
-    if (!rval)
-        return NULL;
-
-    memset(rval, 0, sizeof(Lexer));
+    Lexer* rval = (Lexer*)safe_alloc(sizeof(Lexer));
 
     rval->file = fopen(filename, "r");
 
     if (!rval->file)
-        rval->lastError = errno;
+    {
+        char* errStr = strerror(errno);
+        fatal(NULL, ERR_CantOpenFile, "Can't open file '%s': %s", filename, errStr);
+    }
+    else
+        rval->filename = safe_dup(filename);
 
     return rval;
 }
@@ -150,6 +155,8 @@ void delete_lexer(Lexer* this)
 {
     if (!this)
         return;
+
+    free(this->filename);
 
     fclose(this->file);
 
@@ -196,7 +203,9 @@ Token* lexer_parseNumber(Lexer* this)
     while (isdigit(this->buffer[this->index]))
         ++this->index;
 
-    return new_token(this->buffer + start, this->index - start, CONST_INT, this->lineNumber);
+    char* lit = safe_slice(this->buffer + start, this->index - start);
+
+    return new_token(lit, CONST_INT, this->lineNumber, this->filename);
 }
 
 /* ===================================================================== */
@@ -216,24 +225,15 @@ Token* lexer_parseWord(Lexer* this)
     }
 
     int len = this->index - start;
-    char buffer[65];
-
-    if (len > sizeof(buffer) - 1)
-    {
-        this->lastError = EOVERFLOW;
-        return NULL;
-    }
-
     TokenType type = IDENTIFIER;
 
-    strncpy(buffer, this->buffer + start, len);
-    buffer[len] = 0;
+    char* lit = safe_slice(this->buffer + start, len);
 
     if (len < MAX_KEYWORDS)
     {
         for (int i = 0; g_keywords[len][i].keyword; ++i)
         {
-            if (strncmp(g_keywords[len][i].keyword, buffer, sizeof(buffer)) == 0)
+            if (strncmp(g_keywords[len][i].keyword, lit, len) == 0)
             {
                 type = g_keywords[len][i].type;
                 break;
@@ -241,7 +241,7 @@ Token* lexer_parseWord(Lexer* this)
         }
     }
 
-    return new_token(buffer, len, type, this->lineNumber);
+    return new_token(lit, type, this->lineNumber, this->filename);
 }
 
 /* ===================================================================== */
@@ -249,9 +249,9 @@ Token* lexer_parseWord(Lexer* this)
 Token* lexer_parseSymbol(Lexer* this)
 {
     char c = this->buffer[this->index++];
-    char lit[2] = { c, 0 };
+    char* lit = safe_slice(this->buffer + this->index - 1, 1);
 
-    return new_token(lit, 1, c, this->lineNumber);
+    return new_token(lit, c, this->lineNumber, this->filename);
 }
 
 /* ===================================================================== */

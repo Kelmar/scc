@@ -1,23 +1,30 @@
 /* ===================================================================== */
 /* ===================================================================== */
 
-#pragma once
+#include <stdlib.h>
+#include <string.h>
 
 #include "ast/node.h"
 
 #include "error.h"
-#include "lexer.h"
 
 /* ===================================================================== */
 
-typedef struct ParserTAG Parser;
-
 RET_NOTNULL
-Parser* new_parser(Lexer*);
-void delete_parser(Parser*);
+AstNode* new_astNode(AstNodeType type)
+{
+    AstNode* rval = (AstNode*)safe_alloc(sizeof(AstNode));
+    rval->type = type;
 
-int parser_lastError(Parser*);
+    return rval;
+}
 
-AstNode* parser_getTree(Parser*);
+void delete_astNode(AstNode* this)
+{
+    if (!this)
+        return;
+
+    free(this);
+}
 
 /* ===================================================================== */

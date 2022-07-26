@@ -5,6 +5,8 @@
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\token.c" />
     <ClCompile Include="src\parser.c" />
+    <ClCompile Include="src\astnode.c" />
+    <ClCompile Include="src\error.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cbool.h" />
@@ -12,5 +14,7 @@
     <ClInclude Include="include\token.h" />
     <ClInclude Include="include\parser.h" />
     <ClInclude Include="include\ast\node.h" />
+    <ClInclude Include="include\error.h" />
+    <ClInclude Include="include\comp.h" />
   </ItemGroup>
 </Project>
