@@ -146,11 +146,14 @@
   <ItemGroup>
     <ClCompile Include="src\lexer.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\parser.c" />
     <ClCompile Include="src\token.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ast\node.h" />
     <ClInclude Include="include\cbool.h" />
     <ClInclude Include="include\lexer.h" />
+    <ClInclude Include="include\parser.h" />
     <ClInclude Include="include\token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

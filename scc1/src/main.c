@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "lexer.h";
+#include "lexer.h"
 
 /*
  * Stage 1 compiling.

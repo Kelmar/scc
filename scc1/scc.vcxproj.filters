@@ -4,10 +4,13 @@
     <ClCompile Include="src\lexer.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\token.c" />
+    <ClCompile Include="src\parser.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cbool.h" />
     <ClInclude Include="include\lexer.h" />
     <ClInclude Include="include\token.h" />
+    <ClInclude Include="include\parser.h" />
+    <ClInclude Include="include\ast\node.h" />
   </ItemGroup>
 </Project>
