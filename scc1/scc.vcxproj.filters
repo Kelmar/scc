@@ -21,4 +21,7 @@
     <ClInclude Include="include\list.h" />
     <ClInclude Include="include\strobj.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\README.md" />
+  </ItemGroup>
 </Project>

@@ -168,6 +168,9 @@
     <ClInclude Include="include\strobj.h" />
     <ClInclude Include="include\token.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\README.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
