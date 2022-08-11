@@ -6,15 +6,16 @@
 
 #include "error.h"
 #include "token.h"
+#include "strobj.h"
 
 /* ===================================================================== */
 
 RET_NOTNULL
-Token* new_token(char* lit, TokenType type, int lineNumber, const char* filename)
+Token* new_token(String* lit, TokenType type, int lineNumber, const char* filename)
 {
     Token* rval = (Token*)safe_alloc(sizeof(Token));
 
-    rval->lit = lit;
+    rval->lit = new_stringCopy(lit);
     rval->type = type;
     rval->lineNumber = lineNumber;
     rval->filename = filename;
@@ -27,7 +28,7 @@ void delete_token(Token* t)
     if (!t)
         return;
 
-    free(t->lit);
+    delete_string(t->lit);
     free(t);
 }
 

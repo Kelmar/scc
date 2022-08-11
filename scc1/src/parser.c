@@ -9,6 +9,7 @@
 
 #include "cbool.h"
 #include "error.h"
+#include "strobj.h"
 #include "parser.h"
 #include "lexer.h"
 
@@ -154,7 +155,7 @@ AstNode* parser_parseArgumentDecl(Parser* this)
     {
 	// TODO: Add entry into symbol table here.
 
-	rval->ArgDecl.argName = safe_dup(this->currentToken->lit);
+	rval->ArgDecl.argName = safe_dup(this->currentToken->lit->m_data);
 	delete_astNode(type);
 	parser_getNextToken(this);
     }
@@ -209,26 +210,29 @@ AstNode* parser_parseArgumentList(Parser* this)
  */
 AstNode* parser_parseFuncProto(Parser* this)
 {
-    AstNode* type = parser_parseType(this, '(');
+    AstNode* returnType = parser_parseType(this, '(');
     
-    if (!type)
+    if (!returnType)
 	return NULL;
 
     if (this->currentToken->type != TOK_Identifier)
     {
 	error(this->currentToken, ERR_UnexpectedToken, "Expected identifier");
-	delete_astNode(type);
+	delete_astNode(returnType);
 	parser_recoverTo(this, ';');
 	return NULL;
     }
 
     // TODO: Insert the identifier into the symtab here.
+    char* name = safe_dup(this->currentToken->lit->m_data);
+
     parser_getNextToken(this);
 
     if (this->currentToken->type != '(')
     {
 	error(this->currentToken, ERR_UnexpectedToken, "Unexpected token '%s', expected (", this->currentToken->lit);
-	delete_astNode(type);
+	delete_astNode(returnType);
+	free(name);
 	parser_recoverTo(this, ')');
 	return NULL;
     }
@@ -240,19 +244,22 @@ AstNode* parser_parseFuncProto(Parser* this)
     {
 	error(this->currentToken, ERR_UnexpectedToken, "Unexpected token '%s', expected )", this->currentToken->lit);
 
-	delete_astNode(type);
+	delete_astNode(returnType);
 	delete_astNode(argList);
+	free(name);
 
 	parser_recoverTo(this, ';');
 
 	return NULL;
     }
 
-    // Temporary
-    delete_astNode(type);
-    delete_astNode(argList);
+    AstNode* rval = new_astNode(ANT_FUNC_DECEL);
 
-    return NULL;
+    rval->FuncDecl.argList = argList->argList;
+    rval->FuncDecl.returnType = returnType;
+    rval->FuncDecl.funcName = name;
+
+    return rval;
 }
 
 /* ===================================================================== */

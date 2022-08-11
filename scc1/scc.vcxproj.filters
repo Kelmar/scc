@@ -8,6 +8,7 @@
     <ClCompile Include="src\astnode.c" />
     <ClCompile Include="src\error.c" />
     <ClCompile Include="src\list.c" />
+    <ClCompile Include="src\strobj.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cbool.h" />
@@ -18,5 +19,6 @@
     <ClInclude Include="include\error.h" />
     <ClInclude Include="include\comp.h" />
     <ClInclude Include="include\list.h" />
+    <ClInclude Include="include\strobj.h" />
   </ItemGroup>
 </Project>

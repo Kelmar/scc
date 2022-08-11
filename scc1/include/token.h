@@ -11,19 +11,20 @@ typedef enum TokenTypeTAG
 {
     // Values below 0x00000100 are ASCII character literals.
 
-    TOK_EndOfFile   = 0x00000005, // End of file marker (used by lexer to signal EOF)
+    TOK_EndOfFile    = 0x00000005, // End of file marker (used by lexer to signal EOF)
 
-    TOK_Identifier  = 0x00000100,
+    TOK_Identifier   = 0x00000100,
 
-    // Constants
-    TOK_ConstString = 0x00000101,
-    TOK_ConstChar   = 0x00000102,
-    TOK_ConstShort  = 0x00000103,
-    TOK_ConstInt    = 0x00000104,
-    TOK_ConstLong   = 0x00000105,
-    TOK_ConstULong  = 0x00000106,
-    TOK_ConstFloat  = 0x00000107,
-    TOK_ConstDouble = 0x00000108,
+    // Constant Values
+    TOK_ConstString  = 0x00000101, // String
+    TOK_ConstChar    = 0x00000102, // Char
+    TOK_ConstShort   = 0x00000103, // Short
+    TOK_ConstInt     = 0x00000104, // Int
+    TOK_ConstLong    = 0x00000105, // Long
+    TOK_ConstLLong   = 0x00000106, // Long Long
+    TOK_ConstFloat   = 0x00000107, // Float
+    TOK_ConstDouble  = 0x00000108, // Double
+    TOK_ConstLDouble = 0x00000109, // Long Double
 
     // Keywords
     KW_DO        = 0x00001200,
@@ -99,20 +100,20 @@ typedef enum TokenTypeTAG
 
 /* ===================================================================== */
 
+typedef struct StringTAG String;
+
 typedef struct TokenTAG
 {
-    char* lit;
-    TokenType type;
-    const char* filename;
-    int lineNumber;
+    String* lit;            ///< Token literal string
+    TokenType type;         ///< Token type
+    const char* filename;   ///< The filename we saw this token in.
+    int lineNumber;         ///< The line number we saw this token on.
 } Token;
 
 /* ===================================================================== */
 
 RET_NOTNULL
-Token* new_token(char* lit, TokenType type, int lineNumber, const char* filename);
+Token* new_token(String* lit, TokenType type, int lineNumber, const char* filename);
 void delete_token(Token*);
-
-#undef RET_NOTNULL__
 
 /* ===================================================================== */

@@ -15,6 +15,8 @@ typedef enum AstNodeTypeTAG
     ANT_ARG_LIST
 } AstNodeType;
 
+typedef struct AstNodeTAG AstNode;
+
 typedef struct AstNodeTAG
 {
     AstNodeType type;
@@ -31,11 +33,12 @@ typedef struct AstNodeTAG
 
         List* argList;
 
-        /*
-        struct UserTypeNodeTAG
+        struct FuncDeclNodeTAG
         {
-        };
-        */
+            AstNode* returnType;
+            char* funcName; // TODO: Replace with entry in symtab
+            List* argList;  // Argument list
+        } FuncDecl;
     };
 } AstNode;
 

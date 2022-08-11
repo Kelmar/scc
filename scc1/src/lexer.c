@@ -4,6 +4,7 @@
 #include "cbool.h"
 
 #include "error.h"
+#include "strobj.h"
 #include "token.h"
 #include "lexer.h"
 
@@ -196,16 +197,26 @@ bool lexer_getLine(Lexer* this)
 
 /* ===================================================================== */
 
-Token* lexer_parseNumber(Lexer* this)
+String* lexer_parseDigits(Lexer* this)
 {
     int start = this->index;
 
     while (isdigit(this->buffer[this->index]))
         ++this->index;
 
-    char* lit = safe_slice(this->buffer + start, this->index - start);
+    return new_stringn(this->buffer + start, this->index - start);
+}
 
-    return new_token(lit, TOK_ConstInt, this->lineNumber, this->filename);
+/* ===================================================================== */
+
+Token* lexer_parseNumber(Lexer* this)
+{
+    String* lit = lexer_parseDigits(this);
+
+    Token* rval = new_token(lit, TOK_ConstInt, this->lineNumber, this->filename);
+    delete_string(lit);
+
+    return rval;
 }
 
 /* ===================================================================== */
@@ -227,13 +238,13 @@ Token* lexer_parseWord(Lexer* this)
     int len = this->index - start;
     TokenType type = TOK_Identifier;
 
-    char* lit = safe_slice(this->buffer + start, len);
+    String* lit = new_stringn(this->buffer + start, len);
 
     if (len < MAX_KEYWORDS)
     {
         for (int i = 0; g_keywords[len][i].keyword; ++i)
         {
-            if (strncmp(g_keywords[len][i].keyword, lit, len) == 0)
+            if (strncmp(g_keywords[len][i].keyword, lit->m_data, len) == 0)
             {
                 type = g_keywords[len][i].type;
                 break;
@@ -241,17 +252,38 @@ Token* lexer_parseWord(Lexer* this)
         }
     }
 
-    return new_token(lit, type, this->lineNumber, this->filename);
+    Token* rval = new_token(lit, type, this->lineNumber, this->filename);
+    delete_string(lit);
+
+    return rval;
 }
 
 /* ===================================================================== */
 
 Token* lexer_parseSymbol(Lexer* this)
 {
-    char c = this->buffer[this->index++];
-    char* lit = safe_slice(this->buffer + this->index - 1, 1);
+    String* lit = new_stringn(this->buffer + this->index, 1);
 
-    return new_token(lit, c, this->lineNumber, this->filename);
+    char c = this->buffer[this->index++];
+
+    Token* rval = new_token(lit, c, this->lineNumber, this->filename);
+    delete_string(lit);
+
+    return rval;
+}
+
+/* ===================================================================== */
+
+Token* lexer_parseString(Lexer* this)
+{
+    return NULL;
+}
+
+/* ===================================================================== */
+
+Token* lexer_parseChar(Lexer* this)
+{
+    return NULL;
 }
 
 /* ===================================================================== */
@@ -279,6 +311,10 @@ Token* lexer_getToken(Lexer* this)
             return lexer_parseNumber(this);
         else if (isalpha(c) || c == '_')
             return lexer_parseWord(this);
+        else if (c == '"')
+            return lexer_parseString(this);
+        else if (c == '\'')
+            return lexer_parseChar(this);
         else
             return lexer_parseSymbol(this);
     }
