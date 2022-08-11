@@ -9,6 +9,17 @@
 
 /* ===================================================================== */
 
+// For now bytes/chars are basically the same thing, we don't support Unicode. -- B.Simonds (Aug 11, 2022)
+
+typedef struct StringTAG
+{
+    char* data;      ///< Actual string data.
+    size_t length;   ///< Length in characters of string data.
+    size_t size;     ///< Size of data buffer in bytes.
+} String;
+
+/* ===================================================================== */
+
 RET_NOTNULL
 String* new_string(const char* rhs)
 {
@@ -21,11 +32,12 @@ String* new_stringn(const char* rhs, size_t len)
 {
     String* rval = (String*)safe_alloc(sizeof(String));
 
-    rval->m_length = len + 1;
-    rval->m_data = (char*)safe_alloc(rval->m_length);
+    rval->length = len;
+    rval->size = len + 1;
+    rval->data = (char*)safe_alloc(rval->size);
 
-    strncpy(rval->m_data, rhs, rval->m_length - 1);
-    rval->m_data[rval->m_length - 1] = '\0';
+    strncpy(rval->data, rhs, rval->length);
+    rval->data[rval->length] = '\0';
 
     return rval;
 }
@@ -35,11 +47,11 @@ String* new_stringCopy(const String* rhs)
 {
     String* rval = (String*)safe_alloc(sizeof(String));
 
-    rval->m_length = rhs->m_length;
-    rval->m_data = (char*)safe_alloc(rval->m_length);
+    rval->length = rhs->length;
+    rval->size = rhs->size;
+    rval->data = (char*)safe_alloc(rval->size);
 
-    strncpy(rval->m_data, rhs->m_data, rval->m_length - 1);
-    rval->m_data[rval->m_length - 1] = '\0';
+    strncpy(rval->data, rhs->data, rval->size);
 
     return rval;
 }
@@ -49,26 +61,67 @@ void delete_string(String* this)
     if (!this)
         return;
 
-    free(this->m_data);
+    free(this->data);
 
     free(this);
 }
 
 /* ===================================================================== */
 
-RET_NOTNULL
-String* string_cat(String* lhs, String* rhs)
+const char* string_c(const String* this)
 {
-    String* rval = (String*)safe_alloc(sizeof(String));
+    return this->data;
+}
 
-    rval->m_length = lhs->m_length + rhs->m_length + 1;
-    rval->m_data = (char*)safe_alloc(rval->m_length);
+/* ===================================================================== */
 
-    memcpy(rval->m_data, lhs->m_data, lhs->m_length);
-    memcpy(rval->m_data + lhs->m_length, rhs->m_data, rhs->m_length);
-    rval->m_data[rval->m_length] = '\0';
+int string_cmpc(const String* lhs, const char* rhs)
+{
+    return string_cmpn(lhs, rhs, strlen(rhs));
+}
 
-    return rval;
+int string_cmpn(const String* lhs, const char* rhs, size_t len)
+{
+    size_t x = MIN(lhs->length, len);
+
+    return strncmp(lhs->data, rhs, x);
+}
+
+int string_cmp(const String* lhs, const String* rhs)
+{
+    return string_cmpn(lhs, rhs->data, rhs->length);
+}
+
+/* ===================================================================== */
+
+RET_NOTNULL
+String* string_catc(String* dest, const char* str)
+{
+    return string_catn(dest, str, strlen(str));
+}
+
+RET_NOTNULL
+String* string_catn(String* dest, const char* str, size_t len)
+{
+    size_t newLen = dest->length + len;
+    char* newData = (char*)safe_alloc(newLen + 1);
+
+    memcpy(newData, dest->data, dest->length);
+    memcpy(newData + dest->length, str, len);
+    newData[newLen] = '\0';
+
+    free(dest->data);
+    dest->data = newData;
+    dest->length = newLen;
+    dest->size = newLen + 1;
+
+    return dest;
+}
+
+RET_NOTNULL
+String* string_cat(String* lhs, const String* rhs)
+{
+    return string_catn(lhs, rhs->data, rhs->length);
 }
 
 /* ===================================================================== */

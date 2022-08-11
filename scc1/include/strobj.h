@@ -7,12 +7,7 @@
 
 /* ===================================================================== */
 
-// We may need to make this opaque. -- B.Simonds (Aug 11, 2022)
-typedef struct StringTAG
-{
-    char*  m_data;      ///< Actual string data.
-    size_t m_length;    ///< Length in bytes of string data.
-} String;
+typedef struct StringTAG String;
 
 /* ===================================================================== */
 
@@ -29,8 +24,26 @@ void delete_string(String*);
 
 /* ===================================================================== */
 
+const char* string_c(const String* this);
+
+/* ===================================================================== */
+
+int string_cmpc(const String* lhs, const char* rhs);
+
+int string_cmpn(const String* lhs, const char* rhs, size_t len);
+
+int string_cmp(const String* lhs, const String* rhs);
+
+/* ===================================================================== */
+
 RET_NOTNULL
-String* string_cat(String* lhs, String* rhs);
+String* string_catc(String* dest, const char* source);
+
+RET_NOTNULL
+String* string_catn(String* dest, const char* source, size_t len);
+
+RET_NOTNULL
+String* string_cat(String* dest, const String* rhs);
 
 /* ===================================================================== */
 

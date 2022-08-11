@@ -211,10 +211,40 @@ String* lexer_parseDigits(Lexer* this)
 
 Token* lexer_parseNumber(Lexer* this)
 {
-    String* lit = lexer_parseDigits(this);
+    String* whole = lexer_parseDigits(this);
 
-    Token* rval = new_token(lit, TOK_ConstInt, this->lineNumber, this->filename);
-    delete_string(lit);
+    TokenType type = TOK_ConstInt;
+
+    if (this->buffer[this->index] == '.' && isdigit(this->buffer[this->index + 1]))
+    {
+        ++this->index;
+
+        String* dec = lexer_parseDigits(this);
+        
+        string_catn(whole, ".", 1);
+        string_cat(whole, dec);
+        delete_string(dec);
+
+        type = TOK_ConstFloat;
+    }
+
+    int c = this->buffer[this->index];
+
+    if ((c == 'e' || c == 'E') && isdigit(this->buffer[this->index + 1]))
+    {
+        ++this->index;
+
+        String* exp = lexer_parseDigits(this);
+
+        string_catn(whole, "e", 1);
+        string_cat(whole, exp);
+        delete_string(exp);
+
+        type = TOK_ConstFloat;
+    }
+
+    Token* rval = new_token(whole, type, this->lineNumber, this->filename);
+    delete_string(whole);
 
     return rval;
 }
@@ -244,7 +274,7 @@ Token* lexer_parseWord(Lexer* this)
     {
         for (int i = 0; g_keywords[len][i].keyword; ++i)
         {
-            if (strncmp(g_keywords[len][i].keyword, lit->m_data, len) == 0)
+            if (strncmp(g_keywords[len][i].keyword, string_c(lit), len) == 0)
             {
                 type = g_keywords[len][i].type;
                 break;

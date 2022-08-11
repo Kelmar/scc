@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "strobj.h"
 #include "lexer.h"
 #include "parser.h"
 
@@ -28,23 +29,23 @@ void parseArgs(int argc, const char** argv)
 
 void mainLoop(Lexer* l, Parser* p)
 {
-    AstNode* ast = parser_getTree(p);
+    //AstNode* ast = parser_getTree(p);
 
-    delete_parser(p);
+    //delete_parser(p);
 
-    //for (;;)
-    //{
-    //    Token* t = lexer_getToken(l);
+    for (;;)
+    {
+        Token* t = lexer_getToken(l);
 
-    //    if (!t)
-    //        break;
+        if (!t)
+            break;
 
-    //    printf("0x%08X TOKEN: %s\r\n", t->type, t->lit);
+        printf("0x%08X TOKEN: %s\r\n", t->type, string_c(t->lit));
 
-    //    delete_token(t);
-    //}
+        delete_token(t);
+    }
 
-    //delete_lexer(l);
+    delete_lexer(l);
 }
 
 /* ===================================================================== */
