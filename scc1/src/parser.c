@@ -155,7 +155,8 @@ AstNode* parser_parseArgumentDecl(Parser* this)
     {
 	// TODO: Add entry into symbol table here.
 
-	rval->ArgDecl.argName = safe_dup(this->currentToken->lit->m_data);
+	rval->ArgDecl.argName = new_stringCopy(this->currentToken->lit);
+
 	delete_astNode(type);
 	parser_getNextToken(this);
     }
@@ -224,7 +225,7 @@ AstNode* parser_parseFuncProto(Parser* this)
     }
 
     // TODO: Insert the identifier into the symtab here.
-    char* name = safe_dup(this->currentToken->lit->m_data);
+    String* name = new_stringCopy(this->currentToken->lit);
 
     parser_getNextToken(this);
 
@@ -232,7 +233,7 @@ AstNode* parser_parseFuncProto(Parser* this)
     {
 	error(this->currentToken, ERR_UnexpectedToken, "Unexpected token '%s', expected (", this->currentToken->lit);
 	delete_astNode(returnType);
-	free(name);
+	delete_string(name);
 	parser_recoverTo(this, ')');
 	return NULL;
     }
@@ -244,9 +245,9 @@ AstNode* parser_parseFuncProto(Parser* this)
     {
 	error(this->currentToken, ERR_UnexpectedToken, "Unexpected token '%s', expected )", this->currentToken->lit);
 
+	delete_string(name);
 	delete_astNode(returnType);
 	delete_astNode(argList);
-	free(name);
 
 	parser_recoverTo(this, ';');
 

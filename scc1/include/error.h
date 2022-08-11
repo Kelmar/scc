@@ -52,26 +52,3 @@ inline void* safe_alloc(size_t sz)
 }
 
 /* ===================================================================== */
-
-RET_NOTNULL
-inline char* safe_dup(const char* str)
-{
-    size_t len = strlen(str);
-    char* rval = (char*)safe_alloc(len + 1);
-    strncpy(rval, str, len);
-    rval[len] = '\0';
-    return rval;
-}
-
-/* ===================================================================== */
-
-RET_NOTNULL
-inline char* safe_slice(const char* str, int len)
-{
-    char* rval = (char*)safe_alloc(len + 1);
-    strncpy(rval, str, len);
-    rval[len] = '\0';
-    return rval;
-}
-
-/* ===================================================================== */

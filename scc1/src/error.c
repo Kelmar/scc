@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "error.h"
+#include "strobj.h"
 
 /* ===================================================================== */
 
@@ -26,7 +27,7 @@ void verror(Token* token, ErrorCode errorCode, const char* message, va_list args
     vsnprintf(buf, sizeof(buf), message, args);
 
     if (token)
-        fprintf(stderr, "%s(%d): error C%04d: %s\r\n", token->filename, token->lineNumber, errorCode, buf);
+        fprintf(stderr, "%s(%d): error C%04d: %s\r\n", token->filename->m_data, token->lineNumber, errorCode, buf);
     else
         fprintf(stderr, "error C%04d: %s\r\n", errorCode, buf);
 }

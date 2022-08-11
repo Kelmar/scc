@@ -28,7 +28,7 @@ typedef struct AstNodeTAG
         struct ArgDeclNodeTAG
         {
             TokenType baseType;
-            char* argName; // TODO: Replace with entry in symtab
+            String* argName; // TODO: Replace with entry in symtab
         } ArgDecl;
 
         List* argList;
@@ -36,7 +36,7 @@ typedef struct AstNodeTAG
         struct FuncDeclNodeTAG
         {
             AstNode* returnType;
-            char* funcName; // TODO: Replace with entry in symtab
+            String* funcName; // TODO: Replace with entry in symtab
             List* argList;  // Argument list
         } FuncDecl;
     };

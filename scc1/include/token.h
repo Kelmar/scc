@@ -106,14 +106,14 @@ typedef struct TokenTAG
 {
     String* lit;            ///< Token literal string
     TokenType type;         ///< Token type
-    const char* filename;   ///< The filename we saw this token in.
+    const String* filename; ///< The filename we saw this token in. (unowned)
     int lineNumber;         ///< The line number we saw this token on.
 } Token;
 
 /* ===================================================================== */
 
 RET_NOTNULL
-Token* new_token(String* lit, TokenType type, int lineNumber, const char* filename);
+Token* new_token(String* lit, TokenType type, int lineNumber, const String* filename);
 void delete_token(Token*);
 
 /* ===================================================================== */

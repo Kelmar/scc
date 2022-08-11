@@ -18,14 +18,14 @@
 
 typedef struct LexerTAG
 {
-    FILE* file;         ///< The open file handle for this lexer
-    int   lastError;    ///< The last error encountered
-    char  buffer[1024]; ///< Current line buffer
-    int   index;        ///< Current index into the line buffer
+    FILE*   file;         ///< The open file handle for this lexer
+    int     lastError;    ///< The last error encountered
+    char    buffer[1024]; ///< Current line buffer
+    int     index;        ///< Current index into the line buffer
 
     // These two can be adjusted with the #line directive
-    char* filename;     ///< Name of the current file we're parsing
-    int   lineNumber;   ///< The current line number we're parsing
+    String* filename;     ///< Name of the current file we're parsing
+    int     lineNumber;   ///< The current line number we're parsing
 } Lexer;
 
 /* ===================================================================== */
@@ -147,7 +147,7 @@ Lexer* new_lexer(const char* filename)
         fatal(NULL, ERR_CantOpenFile, "Can't open file '%s': %s", filename, errStr);
     }
     else
-        rval->filename = safe_dup(filename);
+        rval->filename = new_string(filename);
 
     return rval;
 }
@@ -157,7 +157,7 @@ void delete_lexer(Lexer* this)
     if (!this)
         return;
 
-    free(this->filename);
+    delete_string(this->filename);
 
     fclose(this->file);
 

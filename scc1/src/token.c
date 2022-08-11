@@ -11,7 +11,7 @@
 /* ===================================================================== */
 
 RET_NOTNULL
-Token* new_token(String* lit, TokenType type, int lineNumber, const char* filename)
+Token* new_token(String* lit, TokenType type, int lineNumber, const String* filename)
 {
     Token* rval = (Token*)safe_alloc(sizeof(Token));
 
